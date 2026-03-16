@@ -35,16 +35,6 @@ Open `fitflow.html` in any browser — no installation or setup required!
 
 ---
 
-## 📂 Project Structure
-
-```
-fitflow/
-├── fitflow.html      # Complete app — all screens in one file
-└── README.md
-```
-
----
-
 ## 🎯 About This Project
 
 This project was created as a **UI/UX design-to-code task** during my internship at **SkillCraft Technology**.  
