@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FitFlow – Your Fitness Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --black:#111;--white:#fff;--gray:#f3f3f3;--gray2:#e8e8e8;--gray3:#a0a0a0;
+    --accent:#111;--purple:#5b3fe4;--green:#22c55e;--red:#ef4444;
+    --font-head:'Sora',sans-serif;--font-body:'DM Sans',sans-serif;
+  }
+  html,body{height:100%;background:#e5e5e5;display:flex;justify-content:center;align-items:center;font-family:var(--font-body)}
+  
+  /* Phone shell */
+  .phone{
+    width:390px;height:844px;background:#f5f5f5;border-radius:50px;
+    overflow:hidden;position:relative;box-shadow:0 40px 80px rgba(0,0,0,.3);
+    display:flex;flex-direction:column;
+  }
+  .notch{
+    width:130px;height:34px;background:#111;border-radius:0 0 22px 22px;
+    position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:100;
+  }
+
+  /* Screen management */
+  .screen{
+    position:absolute;inset:0;padding:50px 0 0;
+    display:flex;flex-direction:column;
+    transition:opacity .35s ease,transform .35s ease;
+    opacity:0;pointer-events:none;transform:translateX(30px);
+    background:#f5f5f5;
+  }
+  .screen.active{opacity:1;pointer-events:all;transform:translateX(0)}
+
+  /* ========== SPLASH ========== */
+  #splash{justify-content:center;align-items:center;gap:20px;background:#fff}
+  .splash-icon{width:110px;height:110px;background:var(--gray);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:48px}
+  .splash h1{font-family:var(--font-head);font-size:32px;font-weight:800;color:var(--black)}
+  .splash p{color:var(--gray3);font-size:15px;text-align:center}
+  .splash-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .splash-features li{color:#444;font-size:14px}
+  .splash-features li::before{content:'✓  ';font-weight:700}
+  .btn-row{padding:0 24px;display:flex;flex-direction:column;gap:12px;margin-top:auto;margin-bottom:40px}
+  .btn-primary{background:var(--black);color:#fff;border:none;border-radius:18px;
+    padding:18px;font-family:var(--font-head);font-size:16px;font-weight:700;
+    cursor:pointer;transition:opacity .2s}
+  .btn-primary:active{opacity:.8}
+  .btn-secondary{background:var(--gray);color:var(--black);border:none;border-radius:18px;
+    padding:18px;font-family:var(--font-head);font-size:16px;font-weight:600;cursor:pointer}
+
+  /* ========== ONBOARDING ========== */
+  #onboard{justify-content:center;align-items:center;gap:24px;background:#fff;padding-bottom:100px}
+  .onboard-img{width:220px;height:200px;background:var(--gray);border-radius:24px;
+    display:flex;align-items:center;justify-content:center;font-size:80px}
+  .onboard h2{font-family:var(--font-head);font-size:26px;font-weight:800;text-align:center;color:var(--black)}
+  .onboard p{color:var(--gray3);font-size:14px;text-align:center;line-height:1.6;padding:0 30px}
+  .dots{display:flex;gap:8px;align-items:center}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--gray2);transition:all .3s}
+  .dot.active{width:24px;border-radius:4px;background:var(--black)}
+  .dot-label{color:var(--gray3);font-size:13px;margin-left:4px}
+
+  /* ========== CREATE ACCOUNT ========== */
+  #create-account{background:#fff;padding:50px 24px 40px}
+  #create-account h2{font-family:var(--font-head);font-size:28px;font-weight:800;margin-bottom:4px;margin-top:20px}
+  #create-account .sub{color:var(--gray3);font-size:14px;margin-bottom:24px}
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .form-group label{font-size:13px;font-weight:600;color:var(--black)}
+  .form-group input{border:1.5px solid var(--gray2);border-radius:14px;padding:14px 16px;
+    font-size:15px;font-family:var(--font-body);outline:none;background:var(--gray);
+    transition:border-color .2s}
+  .form-group input:focus{border-color:var(--black);background:#fff}
+  .or-row{display:flex;align-items:center;gap:12px;margin:8px 0}
+  .or-row span{color:var(--gray3);font-size:13px}
+  .or-row hr{flex:1;border:none;border-top:1px solid var(--gray2)}
+  .social-row{display:flex;gap:12px}
+  .btn-social{flex:1;border:1.5px solid var(--gray2);background:#fff;border-radius:14px;
+    padding:14px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+  .btn-social:hover{background:var(--gray)}
+
+  /* ========== ABOUT YOU ========== */
+  #about-you{background:#fff;padding:50px 24px 40px}
+  .progress-bar-wrap{height:4px;background:var(--gray2);border-radius:2px;margin:16px 0}
+  .progress-bar{height:4px;border-radius:2px;background:var(--black);transition:width .4s}
+  .step-label{color:var(--gray3);font-size:13px;float:right;margin-top:-18px}
+  #about-you h2{font-family:var(--font-head);font-size:26px;font-weight:800;margin-bottom:20px}
+  .avatar-circle{width:90px;height:90px;border-radius:50%;background:var(--gray);
+    border:2px dashed var(--gray3);display:flex;flex-direction:column;align-items:center;
+    justify-content:center;margin:0 auto 20px;cursor:pointer;font-size:32px}
+  .avatar-circle p{font-size:10px;color:var(--gray3);text-align:center;margin-top:2px}
+  .stats-row{display:flex;gap:12px;margin-bottom:20px}
+  .stat-input{flex:1;display:flex;flex-direction:column;gap:6px}
+  .stat-input label{font-size:12px;color:var(--gray3);font-weight:600}
+  .stat-input input{border:1.5px solid var(--gray2);border-radius:12px;padding:12px;
+    font-size:15px;text-align:center;font-family:var(--font-body);outline:none;
+    background:var(--gray);width:100%}
+  .stat-input input:focus{border-color:var(--black);background:#fff}
+  .gender-group label{font-size:13px;font-weight:600;margin-bottom:10px;display:block}
+  .gender-options{display:flex;flex-wrap:wrap;gap:10px}
+  .gender-btn{border:1.5px solid var(--gray2);background:#fff;border-radius:30px;
+    padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
+  .gender-btn.selected{background:var(--black);color:#fff;border-color:var(--black)}
+
+  /* ========== GOAL ========== */
+  #goal{background:#fff;padding:50px 24px 40px}
+  #goal h2{font-family:var(--font-head);font-size:26px;font-weight:800;margin:16px 0 4px}
+  #goal .sub{color:var(--gray3);font-size:14px;margin-bottom:20px}
+  .goal-card{border:1.5px solid var(--gray2);border-radius:18px;padding:16px;
+    display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;
+    margin-bottom:12px}
+  .goal-card:hover{border-color:#ccc}
+  .goal-card.selected{border:2px solid var(--black);background:var(--gray)}
+  .goal-icon{font-size:30px}
+  .goal-text h4{font-family:var(--font-head);font-size:15px;font-weight:700}
+  .goal-text p{font-size:12px;color:var(--gray3)}
+  .goal-check{margin-left:auto;width:28px;height:28px;border-radius:50%;
+    background:var(--black);display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:14px;opacity:0;transition:opacity .2s}
+  .goal-card.selected .goal-check{opacity:1}
+
+  /* ========== HOME ========== */
+  #home{padding:50px 0 0;display:flex;flex-direction:column}
+  .home-content{flex:1;overflow-y:auto;padding:20px 20px 0}
+  .home-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+  .home-header h2{font-family:var(--font-head);font-size:22px;font-weight:800}
+  .home-header p{font-size:13px;color:var(--gray3);margin-top:2px}
+  .avatar-btn{width:44px;height:44px;border-radius:50%;background:var(--gray2);
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-head);
+    font-weight:700;font-size:16px;cursor:pointer;border:none}
+  .stats-cards{display:flex;gap:12px;margin-bottom:20px}
+  .stat-card{flex:1;background:#fff;border-radius:18px;padding:16px}
+  .stat-card .label{font-size:12px;color:var(--gray3);margin-bottom:6px}
+  .stat-card .value{font-family:var(--font-head);font-size:26px;font-weight:800}
+  .section-title{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--gray3);
+    text-transform:uppercase;margin-bottom:12px}
+  .workout-card{background:var(--black);color:#fff;border-radius:22px;padding:20px;
+    cursor:pointer;margin-bottom:20px;transition:transform .15s}
+  .workout-card:active{transform:scale(.98)}
+  .workout-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .workout-card h3{font-family:var(--font-head);font-size:20px;font-weight:800}
+  .badge{background:#fff;color:var(--black);border-radius:30px;padding:6px 14px;
+    font-size:12px;font-weight:700}
+  .workout-card p{font-size:13px;color:#aaa}
+  .rec-card{background:#fff;border-radius:18px;padding:16px;
+    display:flex;align-items:center;gap:14px;margin-bottom:12px;cursor:pointer}
+  .rec-icon{font-size:30px;width:48px;height:48px;display:flex;align-items:center;justify-content:center}
+  .rec-text h4{font-size:15px;font-weight:600}
+  .rec-text p{font-size:12px;color:var(--gray3)}
+  .rec-badge{margin-left:auto;border:1px solid var(--gray2);border-radius:20px;
+    padding:4px 12px;font-size:12px;color:var(--gray3)}
+
+  /* Bottom nav */
+  .bottom-nav{background:#fff;border-top:1px solid var(--gray2);
+    display:flex;padding:10px 0 24px;margin-top:auto}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    cursor:pointer;padding:8px 0;border:none;background:none}
+  .nav-item span{font-size:22px}
+  .nav-item p{font-size:11px;font-weight:600;color:var(--gray3)}
+  .nav-item.active p{color:var(--black)}
+
+  /* ========== WORKOUT SCREEN ========== */
+  #workout{background:#fff;padding:50px 24px 40px;display:flex;flex-direction:column}
+  .back-btn{background:none;border:none;font-size:22px;cursor:pointer;margin-bottom:16px;
+    width:40px;text-align:left}
+  #workout h2{font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:4px}
+  #workout .sub{color:var(--gray3);font-size:13px;margin-bottom:24px}
+  .exercise-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+  .exercise-item{background:var(--gray);border-radius:16px;padding:16px;
+    display:flex;align-items:center;gap:14px}
+  .ex-num{width:36px;height:36px;border-radius:50%;background:var(--black);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:14px;flex-shrink:0}
+  .ex-info h4{font-weight:600;font-size:15px}
+  .ex-info p{font-size:12px;color:var(--gray3)}
+  .ex-done{margin-left:auto;width:28px;height:28px;border-radius:50%;
+    border:2px solid var(--gray2);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:14px;transition:all .2s;background:#fff}
+  .ex-done.done{background:var(--green);border-color:var(--green);color:#fff}
+  .start-btn{margin-top:20px}
+
+  /* ========== STATS SCREEN ========== */
+  #stats-screen{background:#f5f5f5;padding:60px 20px 20px;display:flex;flex-direction:column;gap:16px}
+  #stats-screen h2{font-family:var(--font-head);font-size:26px;font-weight:800}
+  .stat-big-card{background:#fff;border-radius:22px;padding:20px}
+  .stat-big-card h3{font-size:12px;color:var(--gray3);text-transform:uppercase;
+    letter-spacing:.08em;margin-bottom:12px;font-weight:700}
+  .chart-bars{display:flex;align-items:flex-end;gap:8px;height:80px}
+  .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .bar{width:100%;background:var(--gray2);border-radius:6px;transition:height .5s}
+  .bar.today{background:var(--black)}
+  .bar-label{font-size:10px;color:var(--gray3)}
+  .streak-display{text-align:center;padding:10px 0}
+  .streak-num{font-family:var(--font-head);font-size:48px;font-weight:800}
+  .streak-label{color:var(--gray3);font-size:14px}
+
+  /* ========== ME SCREEN ========== */
+  #me-screen{background:#f5f5f5;padding:60px 20px 20px;display:flex;flex-direction:column;gap:16px}
+  #me-screen h2{font-family:var(--font-head);font-size:26px;font-weight:800}
+  .profile-card{background:#fff;border-radius:22px;padding:24px;
+    display:flex;flex-direction:column;align-items:center;gap:8px}
+  .profile-avatar{width:72px;height:72px;border-radius:50%;background:var(--gray2);
+    display:flex;align-items:center;justify-content:center;font-size:28px;
+    font-family:var(--font-head);font-weight:700}
+  .profile-name{font-family:var(--font-head);font-size:20px;font-weight:800}
+  .profile-sub{color:var(--gray3);font-size:13px}
+  .menu-card{background:#fff;border-radius:22px;overflow:hidden}
+  .menu-item{padding:16px 20px;border-bottom:1px solid var(--gray2);
+    display:flex;align-items:center;gap:14px;cursor:pointer}
+  .menu-item:last-child{border-bottom:none}
+  .menu-item span:first-child{font-size:20px}
+  .menu-item p{font-size:15px;font-weight:500}
+  .menu-item .arrow{margin-left:auto;color:var(--gray3)}
+
+  /* Shared */
+  .mt-auto{margin-top:auto}
+  .hidden{display:none}
+
+  @media(max-width:420px){
+    .phone{width:100vw;height:100vh;border-radius:0}
+    html,body{background:#f5f5f5}
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+
+  <!-- ===== SPLASH ===== -->
+  <div class="screen active" id="splash">
+    <div class="splash" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px">
+      <div class="splash-icon">🏋️</div>
+      <h1>FitFlow</h1>
+      <p>Your fitness journey starts here</p>
+      <ul class="splash-features">
+        <li>Personalised workouts</li>
+        <li>Track calories &amp; streaks</li>
+        <li>100+ exercises</li>
+      </ul>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goTo('onboard')">Get Started →</button>
+      <button class="btn-secondary" onclick="goTo('create-account')">Already have an account</button>
+    </div>
+  </div>
+
+  <!-- ===== ONBOARDING ===== -->
+  <div class="screen" id="onboard">
+    <div class="onboard" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px">
+      <div class="onboard-img" id="onboard-img">📊</div>
+      <h2 id="onboard-title">Track your progress</h2>
+      <p id="onboard-desc">Stats &amp; streaks keep you motivated every day.</p>
+      <div class="dots">
+        <div class="dot" id="d1"></div>
+        <div class="dot active" id="d2"></div>
+        <div class="dot" id="d3"></div>
+        <span class="dot-label" id="dot-label">2 of 3</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="onboard-btn" onclick="nextOnboard()">Next →</button>
+      <button class="btn-secondary" onclick="goTo('create-account')" style="background:transparent;font-size:14px;color:var(--gray3)">Skip</button>
+    </div>
+  </div>
+
+  <!-- ===== CREATE ACCOUNT ===== -->
+  <div class="screen" id="create-account">
+    <h2>Create Account</h2>
+    <p class="sub">Takes less than a minute</p>
+    <div class="form-group">
+      <label>Full name</label>
+      <input type="text" placeholder="Alex Johnson" id="inp-name">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" placeholder="alex@email.com" id="inp-email">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" placeholder="••••••••" id="inp-pass">
+    </div>
+    <div class="or-row"><hr><span>or</span><hr></div>
+    <div class="social-row">
+      <button class="btn-social">G&nbsp; Google</button>
+      <button class="btn-social">🍎 Apple</button>
+    </div>
+    <div class="btn-row mt-auto" style="padding:0;margin-top:auto">
+      <button class="btn-primary" onclick="createAccount()">Create Account</button>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT YOU ===== -->
+  <div class="screen" id="about-you">
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:33%"></div></div>
+    <span class="step-label">1 / 3</span>
+    <h2>About You</h2>
+    <div class="avatar-circle">👤<p>Tap to add<br>photo (optional)</p></div>
+    <div class="stats-row">
+      <div class="stat-input"><label>Age</label><input type="number" value="25" id="inp-age" min="10" max="100"></div>
+      <div class="stat-input"><label>Weight kg</label><input type="number" value="70" id="inp-weight" min="30" max="300"></div>
+      <div class="stat-input"><label>Height cm</label><input type="number" value="175" id="inp-height" min="100" max="250"></div>
+    </div>
+    <div class="gender-group">
+      <label>Gender (optional)</label>
+      <div class="gender-options">
+        <button class="gender-btn selected" onclick="selectGender(this)">Male</button>
+        <button class="gender-btn" onclick="selectGender(this)">Female</button>
+        <button class="gender-btn" onclick="selectGender(this)">Non-binary</button>
+        <button class="gender-btn" onclick="selectGender(this)">Prefer not</button>
+      </div>
+    </div>
+    <div class="btn-row mt-auto" style="padding:0;margin-top:auto">
+      <button class="btn-primary" onclick="goTo('goal')">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== GOAL ===== -->
+  <div class="screen" id="goal">
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:66%"></div></div>
+    <span class="step-label">2 / 3</span>
+    <h2>What's your main goal?</h2>
+    <p class="sub">Pick one — change anytime.</p>
+    <div class="goal-card selected" onclick="selectGoal(this,'Lose Weight')">
+      <span class="goal-icon">🔥</span>
+      <div class="goal-text"><h4>Lose Weight</h4><p>Burn fat · improve stamina</p></div>
+      <div class="goal-check">✓</div>
+    </div>
+    <div class="goal-card" onclick="selectGoal(this,'Build Muscle')">
+      <span class="goal-icon">💪</span>
+      <div class="goal-text"><h4>Build Muscle</h4><p>Strength · hypertrophy</p></div>
+      <div class="goal-check">✓</div>
+    </div>
+    <div class="goal-card" onclick="selectGoal(this,'Stay Active')">
+      <span class="goal-icon">🧘</span>
+      <div class="goal-text"><h4>Stay Active</h4><p>Wellness · daily movement</p></div>
+      <div class="goal-check">✓</div>
+    </div>
+    <div class="goal-card" onclick="selectGoal(this,'Run Faster')">
+      <span class="goal-icon">🏃</span>
+      <div class="goal-text"><h4>Run Faster</h4><p>Cardio · endurance</p></div>
+      <div class="goal-check">✓</div>
+    </div>
+    <div class="btn-row mt-auto" style="padding:0;margin-top:auto">
+      <button class="btn-primary" onclick="finishSetup()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== HOME ===== -->
+  <div class="screen" id="home">
+    <div class="home-content">
+      <div class="home-header">
+        <div>
+          <h2>Good morning, <span id="user-name-display">Alex</span> 👋</h2>
+          <p>Day <span id="day-count">1</span> · <span id="goal-display">Lose weight</span> · Beginner</p>
+        </div>
+        <button class="avatar-btn" id="avatar-btn" onclick="goToTab('me-screen')">A</button>
+      </div>
+
+      <div class="stats-cards">
+        <div class="stat-card">
+          <p class="label">Calories</p>
+          <p class="value" id="cal-display">0</p>
+        </div>
+        <div class="stat-card">
+          <p class="label">Streak</p>
+          <p class="value">1 🔥</p>
+        </div>
+      </div>
+
+      <p class="section-title">Today's Workout</p>
+      <div class="workout-card" onclick="goTo('workout')">
+        <div class="workout-card-top">
+          <h3>Full Body Intro</h3>
+          <span class="badge">20 min</span>
+        </div>
+        <p>Beginner · 5 exercises · No equipment</p>
+      </div>
+
+      <p class="section-title">Recommended</p>
+      <div class="rec-card">
+        <div class="rec-icon">🥗</div>
+        <div class="rec-text"><h4>Nutrition tips</h4><p>3 reads · 5 min</p></div>
+        <span class="rec-badge">New</span>
+      </div>
+      <div class="rec-card">
+        <div class="rec-icon">💧</div>
+        <div class="rec-text"><h4>Hydration tracker</h4><p>Set up · 1 min</p></div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="nav-home" onclick="goToTab('home')"><span>🏠</span><p>Home</p></button>
+      <button class="nav-item" id="nav-train" onclick="goToTab('workout')"><span>💪</span><p>Train</p></button>
+      <button class="nav-item" id="nav-stats" onclick="goToTab('stats-screen')"><span>📊</span><p>Stats</p></button>
+      <button class="nav-item" id="nav-me" onclick="goToTab('me-screen')"><span>👤</span><p>Me</p></button>
+    </nav>
+  </div>
+
+  <!-- ===== WORKOUT ===== -->
+  <div class="screen" id="workout">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <h2>Full Body Intro</h2>
+    <p class="sub">Beginner · 5 exercises · No equipment · 20 min</p>
+    <div class="exercise-list">
+      <div class="exercise-item">
+        <div class="ex-num">1</div>
+        <div class="ex-info"><h4>Jumping Jacks</h4><p>3 sets · 20 reps</p></div>
+        <div class="ex-done" onclick="toggleDone(this)">✓</div>
+      </div>
+      <div class="exercise-item">
+        <div class="ex-num">2</div>
+        <div class="ex-info"><h4>Push-ups</h4><p>3 sets · 10 reps</p></div>
+        <div class="ex-done" onclick="toggleDone(this)">✓</div>
+      </div>
+      <div class="exercise-item">
+        <div class="ex-num">3</div>
+        <div class="ex-info"><h4>Bodyweight Squats</h4><p>3 sets · 15 reps</p></div>
+        <div class="ex-done" onclick="toggleDone(this)">✓</div>
+      </div>
+      <div class="exercise-item">
+        <div class="ex-num">4</div>
+        <div class="ex-info"><h4>Plank Hold</h4><p>3 sets · 30 sec</p></div>
+        <div class="ex-done" onclick="toggleDone(this)">✓</div>
+      </div>
+      <div class="exercise-item">
+        <div class="ex-num">5</div>
+        <div class="ex-info"><h4>Mountain Climbers</h4><p>3 sets · 20 reps</p></div>
+        <div class="ex-done" onclick="toggleDone(this)">✓</div>
+      </div>
+    </div>
+    <button class="btn-primary start-btn" id="start-workout-btn" onclick="startWorkout()">Start Workout 🚀</button>
+  </div>
+
+  <!-- ===== STATS SCREEN ===== -->
+  <div class="screen" id="stats-screen">
+    <h2>Stats 📊</h2>
+    <div class="stat-big-card">
+      <h3>Weekly Workouts</h3>
+      <div class="chart-bars">
+        <div class="bar-wrap"><div class="bar" style="height:30%"></div><span class="bar-label">Mon</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:60%"></div><span class="bar-label">Tue</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:45%"></div><span class="bar-label">Wed</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:80%"></div><span class="bar-label">Thu</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:20%"></div><span class="bar-label">Fri</span></div>
+        <div class="bar-wrap"><div class="bar" style="height:90%"></div><span class="bar-label">Sat</span></div>
+        <div class="bar-wrap"><div class="bar today" style="height:50%"></div><span class="bar-label">Today</span></div>
+      </div>
+    </div>
+    <div class="stat-big-card">
+      <h3>Current Streak</h3>
+      <div class="streak-display">
+        <div class="streak-num">1 🔥</div>
+        <div class="streak-label">Keep going!</div>
+      </div>
+    </div>
+    <div class="stat-big-card">
+      <h3>Calories Burned</h3>
+      <div class="streak-display">
+        <div class="streak-num" id="stats-cal">0</div>
+        <div class="streak-label">kcal total</div>
+      </div>
+    </div>
+    <nav class="bottom-nav">
+      <button class="nav-item" onclick="goToTab('home')"><span>🏠</span><p>Home</p></button>
+      <button class="nav-item" onclick="goToTab('workout')"><span>💪</span><p>Train</p></button>
+      <button class="nav-item active"><span>📊</span><p>Stats</p></button>
+      <button class="nav-item" onclick="goToTab('me-screen')"><span>👤</span><p>Me</p></button>
+    </nav>
+  </div>
+
+  <!-- ===== ME SCREEN ===== -->
+  <div class="screen" id="me-screen">
+    <h2>Me 👤</h2>
+    <div class="profile-card">
+      <div class="profile-avatar" id="me-avatar">A</div>
+      <div class="profile-name" id="me-name">Alex Johnson</div>
+      <div class="profile-sub" id="me-goal-sub">Lose Weight · Beginner</div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-item"><span>🎯</span><p>My Goals</p><span class="arrow">›</span></div>
+      <div class="menu-item"><span>📏</span><p>Body Stats</p><span class="arrow">›</span></div>
+      <div class="menu-item"><span>🔔</span><p>Notifications</p><span class="arrow">›</span></div>
+      <div class="menu-item"><span>⚙️</span><p>Settings</p><span class="arrow">›</span></div>
+      <div class="menu-item" onclick="logout()"><span>🚪</span><p>Log out</p><span class="arrow">›</span></div>
+    </div>
+    <nav class="bottom-nav" style="margin-top:auto">
+      <button class="nav-item" onclick="goToTab('home')"><span>🏠</span><p>Home</p></button>
+      <button class="nav-item" onclick="goToTab('workout')"><span>💪</span><p>Train</p></button>
+      <button class="nav-item" onclick="goToTab('stats-screen')"><span>📊</span><p>Stats</p></button>
+      <button class="nav-item active"><span>👤</span><p>Me</p></button>
+    </nav>
+  </div>
+
+</div><!-- phone -->
+
+<script>
+// ── State ──────────────────────────────
+let state = {
+  name: 'Alex', goal: 'Lose Weight', calories: 0,
+  onboardStep: 2, doneCount: 0, workoutStarted: false
+};
+
+const onboardSlides = [
+  {icon:'💪', title:'Personalised Workouts', desc:'AI-powered plans tailored to your body and goals.'},
+  {icon:'📊', title:'Track your progress', desc:'Stats & streaks keep you motivated every day.'},
+  {icon:'🥗', title:'Eat smarter', desc:'Nutrition tips and calorie tracking made simple.'},
+];
+
+// ── Navigation ─────────────────────────
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.remove('active');
+    s.style.transform='translateX(30px)';
+  });
+  const el = document.getElementById(id);
+  el.style.transform='translateX(0)';
+  el.classList.add('active');
+}
+
+function goToTab(id){
+  // update home nav active state
+  ['nav-home','nav-train','nav-stats','nav-me'].forEach(n=>{
+    const el=document.getElementById(n);
+    if(el) el.classList.remove('active');
+  });
+  const map={home:'nav-home',workout:'nav-train','stats-screen':'nav-stats','me-screen':'nav-me'};
+  if(map[id]){const el=document.getElementById(map[id]);if(el)el.classList.add('active');}
+  goTo(id);
+}
+
+// ── Onboarding ─────────────────────────
+function nextOnboard(){
+  state.onboardStep++;
+  if(state.onboardStep > 3){ goTo('create-account'); return; }
+  const s = onboardSlides[state.onboardStep-1];
+  document.getElementById('onboard-img').textContent = s.icon;
+  document.getElementById('onboard-title').textContent = s.title;
+  document.getElementById('onboard-desc').textContent = s.desc;
+  document.getElementById('dot-label').textContent = `${state.onboardStep} of 3`;
+  ['d1','d2','d3'].forEach((id,i)=>{
+    document.getElementById(id).classList.toggle('active', i===state.onboardStep-1);
+  });
+  if(state.onboardStep===3) document.getElementById('onboard-btn').textContent='Get Started →';
+}
+
+// ── Account ────────────────────────────
+function createAccount(){
+  const n = document.getElementById('inp-name').value.trim();
+  if(n) state.name = n.split(' ')[0];
+  goTo('about-you');
+}
+
+// ── Gender ─────────────────────────────
+function selectGender(btn){
+  document.querySelectorAll('.gender-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ── Goal ───────────────────────────────
+function selectGoal(card, goalName){
+  document.querySelectorAll('.goal-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  state.goal = goalName;
+}
+
+// ── Finish Setup ───────────────────────
+function finishSetup(){
+  // Update home screen
+  document.getElementById('user-name-display').textContent = state.name;
+  document.getElementById('avatar-btn').textContent = state.name[0].toUpperCase();
+  document.getElementById('goal-display').textContent = state.goal;
+  document.getElementById('me-name').textContent = document.getElementById('inp-name').value || 'Alex Johnson';
+  document.getElementById('me-avatar').textContent = state.name[0].toUpperCase();
+  document.getElementById('me-goal-sub').textContent = state.goal + ' · Beginner';
+  goTo('home');
+}
+
+// ── Workout ────────────────────────────
+function toggleDone(el){
+  el.classList.toggle('done');
+  const allDone = document.querySelectorAll('.ex-done');
+  const doneCount = [...allDone].filter(e=>e.classList.contains('done')).length;
+  if(state.workoutStarted){
+    const cal = doneCount * 40;
+    state.calories = cal;
+    document.getElementById('cal-display').textContent = cal;
+    document.getElementById('stats-cal').textContent = cal;
+  }
+  const btn = document.getElementById('start-workout-btn');
+  if(doneCount === allDone.length){
+    btn.textContent = '✅ Workout Complete!';
+    btn.style.background = 'var(--green)';
+  }
+}
+
+function startWorkout(){
+  if(!state.workoutStarted){
+    state.workoutStarted = true;
+    document.getElementById('start-workout-btn').textContent = 'In progress... ⏱';
+  }
+}
+
+// ── Logout ─────────────────────────────
+function logout(){
+  state = {name:'Alex',goal:'Lose Weight',calories:0,onboardStep:2,doneCount:0,workoutStarted:false};
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-email').value='';
+  document.getElementById('inp-pass').value='';
+  goTo('splash');
+}
+</script>
+</body>
+</html>
