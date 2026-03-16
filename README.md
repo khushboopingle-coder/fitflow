@@ -6,7 +6,7 @@ A mobile fitness app UI prototype built as part of my **UI/UX Internship at Skil
 
 ## 📱 Live Preview
 
-Open `fitflow.html` in any browser — no installation or setup required!
+Open `https://khushboopingle-coder.github.io/fitflow/` in any browser — no installation or setup required!
 
 ---
 
@@ -44,6 +44,5 @@ The goal was to convert static app design mockups into a fully working, interact
 
 ## 🧑‍💻 Author
 
-**Khushboo Pingle**  
-UI/UX Intern @ SkillCraft Technology  
+**Khushboo Pingle**    
 🔗 [LinkedIn](https://www.linkedin.com/in/khushboo-pingle08)
